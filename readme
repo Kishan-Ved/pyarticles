@@ -3,3 +3,8 @@ pip install -r requirements.txt
 
 ##### Run the development server
 python manage.py runserver
+
+To Do:
+
+- Add a config for coins
+- Make components in different files
