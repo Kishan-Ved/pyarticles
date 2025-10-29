@@ -28,7 +28,7 @@ function generateTickerHTML() {
             <div class="flex items-center space-x-2 leading-none">
             <span class="font-medium align-middle">${coin.symbol}</span>
             <span class="price font-mono align-middle">$0.00</span>
-            <span class="change font-mono font-normal align-middle text-chart-negative">0.00%</span>
+            <span class="change font-mono font-normal align-middle text-chart-negative"><span class="triangle">▼</span>0.00%</span>
             </div>
         </div>
     </a>
@@ -68,7 +68,8 @@ function connectBinance() {
             const changeEl = el.querySelector('.change');
             if (priceEl && changeEl) {
                 priceEl.textContent = `$${parseFloat(lastPrice).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-                changeEl.textContent = `${parseFloat(priceChangePercent).toFixed(2)}%`;
+                const triangle = priceChangePercent >= 0 ? '▲' : '▼';
+                changeEl.innerHTML = `<span class="triangle">${triangle}</span>${parseFloat(priceChangePercent).toFixed(2)}%`;
                 changeEl.classList.toggle('text-green-500', priceChangePercent > 0);
                 changeEl.classList.toggle('text-red-500', priceChangePercent < 0);
             }
