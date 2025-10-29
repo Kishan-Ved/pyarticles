@@ -7,7 +7,7 @@ python manage.py runserver
 ##### My work
 
 ### Scroll bar
-![Image showing the scroll bar](static/assets/img/examples/scroll.png)
+![Image showing the scroll bar](/examples/scroll.png)
 
 ### News - with 3 columns
-![Image showing news](static/assets/img/examples/news.png)
+![Image showing news](/examples/news.png)
