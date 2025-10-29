@@ -16,17 +16,29 @@
                 transform: translateX(0);
             }
             100% {
-                transform: translateX(-50%);
+                transform: translateX(var(--scroll-distance, -33.333%));
             }
         }
 
         .animate-scroll-infinite {
-            animation: scroll-infinite 40s linear infinite;
+            animation: scroll-infinite 60s linear infinite;
             will-change: transform;
+            transform: translateZ(0); /* Enable hardware acceleration */
+        }
+
+        .animate-scroll-infinite.loading {
+            animation-play-state: paused;
         }
 
         .group:hover .animate-scroll-infinite {
-        animation-play-state: paused;
+            animation-play-state: paused;
+        }
+
+        /* Ensure ticker container handles overflow properly on mobile */
+        .ticker-container {
+            -webkit-overflow-scrolling: touch;
+            overflow-x: hidden;
+            white-space: nowrap;
         }
         
         .pagination button {
@@ -77,8 +89,8 @@
     <!-- Hero -->
     <main class="pt-24">
         <!-- Scrolling Ticker -->
-        <div class="relative z-50 h-8 w-full overflow-hidden border-b border-gray-300 shadow-md bg-white group">
-            <div id="ticker-track" class="flex h-full items-center animate-scroll-infinite group-hover:[animation-play-state:paused]">
+        <div class="ticker-container relative z-50 h-8 w-full overflow-hidden border-b border-gray-300 shadow-md bg-white group">
+            <div id="ticker-track" class="flex h-full items-center animate-scroll-infinite group-hover:[animation-play-state:paused]" style="width: max-content;">
                 <!-- Dynamically populated -->
             </div>
         </div>

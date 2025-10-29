@@ -1,3 +1,5 @@
+// author: Kishan Ved
+
 const COINS = [
     { symbol: "BTC", name: "Bitcoin", logo: "/static/assets/img/logos/bitcoin-btc-logo.png", stream: "btcusdt" },
     { symbol: "ETH", name: "Ethereum", logo: "/static/assets/img/logos/ethereum-eth-logo.png", stream: "ethusdt" },
@@ -14,8 +16,9 @@ function generateTickerHTML() {
     <a data-symbol="${coin.symbol}" 
         href="#" 
         title="View price details"
-        class="hover:bg-neutral-100 transition-colors flex h-full flex-shrink-0 cursor-pointer text-xs">
-        <div class="flex h-full min-w-0 items-center whitespace-nowrap px-4 text-neutral-600 font-sans leading-none">
+        class="hover:bg-neutral-100 transition-colors flex h-full flex-shrink-0 cursor-pointer text-xs"
+        style="min-width: 180px;">
+        <div class="flex h-full items-center whitespace-nowrap px-4 text-neutral-600 font-sans leading-none">
             <img 
             alt="${coin.symbol} logo" 
             loading="lazy" 
@@ -45,10 +48,56 @@ function fillTicker() {
     }
     tickerTrack.innerHTML = "";
     const singleLoop = generateTickerHTML();
+    const viewportWidth = window.innerWidth;
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = singleLoop;
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.visibility = 'hidden';
+    tempDiv.style.display = 'flex';
+    tempDiv.style.width = 'max-content';
+    document.body.appendChild(tempDiv);
+    
+    const singleLoopWidth = tempDiv.scrollWidth;
+    document.body.removeChild(tempDiv);
+    
+    // Calculate how many loops we need to fill at least 3x the viewport width
+    const minRequiredWidth = viewportWidth * 3;
+    const loopsNeeded = Math.ceil(minRequiredWidth / singleLoopWidth);
+    const totalLoops = Math.max(3, loopsNeeded); // 3 min
+    
+    tickerTrack.innerHTML = singleLoop.repeat(totalLoops);
+    
+    // Set the scroll distance based on the number of loops
+    const scrollPercentage = -(100 / totalLoops);
+    tickerTrack.style.setProperty('--scroll-distance', `${scrollPercentage}%`);
+    tickerTrack.style.width = 'max-content';
+    adjustAnimationSpeed(totalLoops);
+}
 
-    // Add enough loops to ensure smooth infinite scrolling
-    const repeatCount = 4; // more = safer coverage
-    tickerTrack.innerHTML = singleLoop.repeat(repeatCount);
+// Adjust animation speed based on content width
+function adjustAnimationSpeed(totalLoops = 2) {
+    // Add loading class to pause animation initially
+    tickerTrack.classList.add('loading');
+    
+    // Wait for DOM to update
+    setTimeout(() => {
+        const tickerFullWidth = tickerTrack.scrollWidth;
+        const singleLoopWidth = tickerFullWidth / totalLoops;
+        const viewportWidth = window.innerWidth;
+        
+        // Calculate duration: consistent speed across all devices
+        // Base speed: 80px per second (slightly slower for better readability)
+        const baseSpeed = 80;
+        const duration = Math.max(15, singleLoopWidth / baseSpeed); // Minimum 15 seconds
+        
+        tickerTrack.style.animationDuration = `${duration}s`;
+        console.log(`Single loop width: ${singleLoopWidth}px, Total loops: ${totalLoops}, Viewport: ${viewportWidth}px, Duration: ${duration}s`);
+        
+        // Remove loading class to start the animation
+        setTimeout(() => {
+            tickerTrack.classList.remove('loading');
+        }, 100);
+    }, 200);
 }
 
 // Connect to Binance WebSocket
@@ -94,3 +143,13 @@ tickerTrack = document.getElementById("ticker-track");
 console.log("ticker-track element:", tickerTrack);
 fillTicker();
 connectBinance();
+
+// Handle window resize for mobile orientation changes
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        console.log("Window resized, recalculating ticker");
+        fillTicker(); // Recalculate everything on resize
+    }, 250);
+});
