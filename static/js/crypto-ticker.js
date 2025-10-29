@@ -1,9 +1,9 @@
 const COINS = [
-    { symbol: "BTC", name: "Bitcoin", logo: "https://cryptologos.cc/logos/bitcoin-btc-logo.png", stream: "btcusdt" },
-    { symbol: "ETH", name: "Ethereum", logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png", stream: "ethusdt" },
-    { symbol: "ADA", name: "Cardano", logo: "https://cryptologos.cc/logos/cardano-ada-logo.png", stream: "adausdt" },
-    { symbol: "BNB", name: "BNB", logo: "https://cryptologos.cc/logos/bnb-bnb-logo.png", stream: "bnbusdt" },
-    { symbol: "SOL", name: "Solana", logo: "https://cryptologos.cc/logos/solana-sol-logo.png", stream: "solusdt" }
+    { symbol: "BTC", name: "Bitcoin", logo: "/static/assets/img/logos/bitcoin-btc-logo.png", stream: "btcusdt" },
+    { symbol: "ETH", name: "Ethereum", logo: "/static/assets/img/logos/ethereum-eth-logo.png", stream: "ethusdt" },
+    { symbol: "ADA", name: "Cardano", logo: "/static/assets/img/logos/cardano-ada-logo.png", stream: "adausdt" },
+    { symbol: "BNB", name: "BNB", logo: "/static/assets/img/logos/bnb-bnb-logo.png", stream: "bnbusdt" },
+    { symbol: "SOL", name: "Solana", logo: "/static/assets/img/logos/solana-sol-logo.png", stream: "solusdt" }
 ];
 
 let tickerTrack;
@@ -24,7 +24,9 @@ function generateTickerHTML() {
             class="rounded-full w-4 h-4 mr-1 flex-shrink-0" 
             src="${coin.logo}"
             style="color:transparent"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"
             >
+            <div class="w-4 h-4 mr-1 flex-shrink-0 bg-gray-300 rounded-full flex items-center justify-center text-xs font-bold text-gray-600" style="display:none;">${coin.symbol.charAt(0)}</div>
             <div class="flex items-center space-x-2 leading-none">
             <span class="font-medium align-middle">${coin.symbol}</span>
             <span class="price font-mono align-middle">$0.00</span>
